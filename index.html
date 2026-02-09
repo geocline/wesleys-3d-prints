@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wesley's 3D Prints - Cool Prints Made By a Kid, For Kids!</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: #f0f4ff;
+      color: #333;
+      overflow-x: hidden;
+    }
+
+    /* ===== HERO ===== */
+    .hero {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #f5576c 75%, #fda085 100%);
+      background-size: 300% 300%;
+      animation: gradientShift 8s ease infinite;
+      padding: 60px 20px 80px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+      animation: sparkle 4s linear infinite;
+    }
+
+    @keyframes sparkle {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .hero h1 {
+      font-family: 'Fredoka One', cursive;
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      color: #fff;
+      text-shadow: 3px 3px 0 rgba(0,0,0,0.15), 0 0 30px rgba(255,255,255,0.3);
+      position: relative;
+      z-index: 1;
+      animation: bounceIn 1s ease;
+    }
+
+    .hero .printer-icon {
+      font-size: clamp(3rem, 8vw, 5rem);
+      display: block;
+      margin-bottom: 10px;
+      animation: wiggle 2s ease-in-out infinite;
+      position: relative;
+      z-index: 1;
+    }
+
+    @keyframes wiggle {
+      0%, 100% { transform: rotate(-3deg); }
+      50% { transform: rotate(3deg); }
+    }
+
+    @keyframes bounceIn {
+      0% { transform: scale(0.3); opacity: 0; }
+      50% { transform: scale(1.05); }
+      70% { transform: scale(0.9); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .hero .tagline {
+      font-family: 'Nunito', sans-serif;
+      font-size: clamp(1.1rem, 3vw, 1.6rem);
+      font-weight: 700;
+      color: #fff;
+      margin-top: 12px;
+      text-shadow: 1px 1px 0 rgba(0,0,0,0.1);
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero .sub-tagline {
+      font-size: clamp(0.9rem, 2vw, 1.1rem);
+      color: rgba(255,255,255,0.9);
+      margin-top: 8px;
+      font-weight: 600;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero .cta-btn {
+      display: inline-block;
+      margin-top: 25px;
+      padding: 14px 40px;
+      background: #fff;
+      color: #764ba2;
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.2rem;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      text-decoration: none;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      transition: transform 0.2s, box-shadow 0.2s;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero .cta-btn:hover {
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+    }
+
+    /* ===== WAVE DIVIDER ===== */
+    .wave-divider {
+      position: relative;
+      margin-top: -2px;
+    }
+    .wave-divider svg {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    /* ===== SECTION TITLES ===== */
+    .section-title {
+      font-family: 'Fredoka One', cursive;
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      text-align: center;
+      margin-bottom: 10px;
+      color: #4a3f8a;
+    }
+
+    .section-subtitle {
+      text-align: center;
+      font-size: 1.05rem;
+      color: #666;
+      margin-bottom: 40px;
+      font-weight: 600;
+    }
+
+    /* ===== PRODUCTS ===== */
+    .products-section {
+      padding: 60px 20px 40px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 25px;
+      padding: 0 10px;
+    }
+
+    .product-card {
+      background: #fff;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      transition: transform 0.3s, box-shadow 0.3s;
+      position: relative;
+    }
+
+    .product-card:hover {
+      transform: translateY(-8px) rotate(0.5deg);
+      box-shadow: 0 12px 35px rgba(0,0,0,0.15);
+    }
+
+    .product-card .card-image {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      display: block;
+      background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+    }
+
+    .product-card .card-image-placeholder {
+      width: 100%;
+      height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 4rem;
+      background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+    }
+
+    .product-card .card-body {
+      padding: 18px;
+    }
+
+    .product-card .card-name {
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.15rem;
+      color: #4a3f8a;
+      margin-bottom: 6px;
+    }
+
+    .product-card .card-desc {
+      font-size: 0.88rem;
+      color: #777;
+      margin-bottom: 10px;
+      line-height: 1.4;
+    }
+
+    .product-card .card-price {
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.4rem;
+      color: #f5576c;
+    }
+
+    .product-card .card-min-order {
+      font-size: 0.78rem;
+      color: #999;
+      font-weight: 700;
+      margin-top: 2px;
+      background: #fff3cd;
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 10px;
+    }
+
+    .product-card .order-btn {
+      display: block;
+      width: 100%;
+      margin-top: 12px;
+      padding: 10px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: #fff;
+      font-family: 'Fredoka One', cursive;
+      font-size: 0.95rem;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: transform 0.2s, opacity 0.2s;
+    }
+
+    .product-card .order-btn:hover {
+      transform: scale(1.03);
+      opacity: 0.9;
+    }
+
+    /* ===== PRICE TAG RIBBON ===== */
+    .product-card .ribbon {
+      position: absolute;
+      top: 12px;
+      right: -5px;
+      background: #f5576c;
+      color: #fff;
+      font-family: 'Fredoka One', cursive;
+      font-size: 0.85rem;
+      padding: 5px 14px 5px 10px;
+      border-radius: 8px 0 0 8px;
+      box-shadow: 0 2px 8px rgba(245,87,108,0.4);
+    }
+
+    /* ===== ORDER FORM ===== */
+    .order-section {
+      background: linear-gradient(135deg, #fdfcfb 0%, #e2d1c3 100%);
+      padding: 60px 20px 80px;
+    }
+
+    .order-form-container {
+      max-width: 650px;
+      margin: 0 auto;
+      background: #fff;
+      border-radius: 24px;
+      padding: 40px 35px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+    }
+
+    .order-form-container label {
+      display: block;
+      font-weight: 700;
+      margin-bottom: 6px;
+      margin-top: 18px;
+      color: #4a3f8a;
+      font-size: 0.95rem;
+    }
+
+    .order-form-container label:first-of-type {
+      margin-top: 0;
+    }
+
+    .order-form-container input[type="text"],
+    .order-form-container input[type="email"],
+    .order-form-container input[type="tel"],
+    .order-form-container textarea {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #e0d6f0;
+      border-radius: 12px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 1rem;
+      transition: border-color 0.2s;
+      outline: none;
+    }
+
+    .order-form-container input:focus,
+    .order-form-container textarea:focus {
+      border-color: #764ba2;
+    }
+
+    .order-form-container textarea {
+      height: 80px;
+      resize: vertical;
+    }
+
+    .checkbox-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 8px;
+      margin-top: 6px;
+    }
+
+    .checkbox-grid label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0;
+      font-weight: 600;
+      font-size: 0.88rem;
+      color: #555;
+      cursor: pointer;
+      padding: 6px 10px;
+      border-radius: 8px;
+      transition: background 0.2s;
+    }
+
+    .checkbox-grid label:hover {
+      background: #f5f0ff;
+    }
+
+    .checkbox-grid input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: #764ba2;
+    }
+
+    .submit-btn {
+      display: block;
+      width: 100%;
+      margin-top: 28px;
+      padding: 14px;
+      background: linear-gradient(135deg, #f5576c, #ff8a65);
+      color: #fff;
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.2rem;
+      border: none;
+      border-radius: 14px;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(245,87,108,0.3);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(245,87,108,0.4);
+    }
+
+    /* ===== ABOUT ===== */
+    .about-section {
+      padding: 60px 20px;
+      text-align: center;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .about-section .about-emoji {
+      font-size: 4rem;
+      margin-bottom: 15px;
+    }
+
+    .about-section p {
+      font-size: 1.1rem;
+      line-height: 1.8;
+      color: #555;
+    }
+
+    .about-section .fun-fact {
+      margin-top: 20px;
+      background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+      padding: 20px 25px;
+      border-radius: 16px;
+      font-weight: 700;
+      color: #4a3f8a;
+      font-size: 1rem;
+    }
+
+    /* ===== FOOTER ===== */
+    footer {
+      background: linear-gradient(135deg, #4a3f8a, #764ba2);
+      color: rgba(255,255,255,0.9);
+      text-align: center;
+      padding: 30px 20px;
+      font-size: 0.95rem;
+    }
+
+    footer .footer-hearts {
+      font-size: 1.5rem;
+      margin-bottom: 8px;
+    }
+
+    /* ===== THANK YOU MODAL ===== */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-box {
+      background: #fff;
+      border-radius: 24px;
+      padding: 45px 35px;
+      text-align: center;
+      max-width: 450px;
+      width: 90%;
+      box-shadow: 0 15px 50px rgba(0,0,0,0.3);
+      animation: popIn 0.4s ease;
+    }
+
+    @keyframes popIn {
+      0% { transform: scale(0.5); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .modal-box .modal-emoji {
+      font-size: 4rem;
+      margin-bottom: 15px;
+    }
+
+    .modal-box h2 {
+      font-family: 'Fredoka One', cursive;
+      color: #4a3f8a;
+      font-size: 1.8rem;
+      margin-bottom: 12px;
+    }
+
+    .modal-box p {
+      color: #666;
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+
+    .modal-box .close-modal {
+      margin-top: 22px;
+      padding: 10px 30px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: #fff;
+      font-family: 'Fredoka One', cursive;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: transform 0.2s;
+    }
+
+    .modal-box .close-modal:hover {
+      transform: scale(1.05);
+    }
+
+    /* ===== FLOATING SHAPES (BG DECORATION) ===== */
+    .floating-shapes {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+      overflow: hidden;
+    }
+
+    .floating-shapes span {
+      position: absolute;
+      display: block;
+      font-size: 2rem;
+      opacity: 0.06;
+      animation: floatUp 15s linear infinite;
+    }
+
+    @keyframes floatUp {
+      0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+      10% { opacity: 0.06; }
+      90% { opacity: 0.06; }
+      100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 600px) {
+      .products-grid {
+        grid-template-columns: 1fr;
+      }
+      .checkbox-grid {
+        grid-template-columns: 1fr;
+      }
+      .order-form-container {
+        padding: 28px 20px;
+      }
+      .hero {
+        padding: 40px 15px 60px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Floating background shapes -->
+<div class="floating-shapes" aria-hidden="true">
+  <span style="left:10%;animation-delay:0s;font-size:1.5rem;">&#9733;</span>
+  <span style="left:25%;animation-delay:2s;font-size:2.5rem;">&#9679;</span>
+  <span style="left:45%;animation-delay:4s;font-size:1.8rem;">&#9650;</span>
+  <span style="left:65%;animation-delay:1s;font-size:2rem;">&#9632;</span>
+  <span style="left:80%;animation-delay:3s;font-size:1.5rem;">&#9733;</span>
+  <span style="left:90%;animation-delay:5s;font-size:2.2rem;">&#9679;</span>
+  <span style="left:5%;animation-delay:7s;font-size:2rem;">&#9650;</span>
+  <span style="left:55%;animation-delay:6s;font-size:1.6rem;">&#9632;</span>
+</div>
+
+<!-- HERO -->
+<header class="hero">
+  <span class="printer-icon" aria-hidden="true">&#x1F5A8;&#xFE0F;</span>
+  <h1>Wesley's 3D Prints</h1>
+  <p class="tagline">Cool 3D Prints Made By a Kid, For Kids!</p>
+  <p class="sub-tagline">Custom colors available - just ask!</p>
+  <a href="#products" class="cta-btn">See What I Make!</a>
+</header>
+
+<!-- Wave -->
+<div class="wave-divider">
+  <svg viewBox="0 0 1440 100" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+    <path fill="#f0f4ff" d="M0,40 C360,100 1080,0 1440,60 L1440,100 L0,100 Z"/>
+  </svg>
+</div>
+
+<!-- PRODUCTS -->
+<section class="products-section" id="products">
+  <h2 class="section-title">My 3D Printed Creations</h2>
+  <p class="section-subtitle">Each item is printed with care right from my 3D printer at home!</p>
+
+  <div class="products-grid" id="productsGrid">
+    <!-- Cards injected by JS -->
+  </div>
+</section>
+
+<!-- ORDER FORM -->
+<section class="order-section" id="order">
+  <h2 class="section-title">Place Your Order!</h2>
+  <p class="section-subtitle">Fill out the form below and I'll get back to you about your order.</p>
+
+  <div class="order-form-container">
+    <form action="https://formspree.io/wesscootermcgee+3d@gmail.com" method="POST" id="orderForm">
+      <input type="hidden" name="_subject" value="New Order from Wesley's 3D Prints!">
+      <input type="text" name="_gotcha" style="display:none">
+
+      <label for="name">Your Name</label>
+      <input type="text" id="name" name="name" placeholder="What's your name?" required>
+
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" placeholder="your.email@example.com" required>
+
+      <label for="phone">Phone Number</label>
+      <input type="tel" id="phone" name="phone" placeholder="(555) 123-4567" required>
+
+      <label>Which items do you want?</label>
+      <div class="checkbox-grid" id="checkboxGrid">
+        <!-- Checkboxes injected by JS -->
+      </div>
+
+      <label for="color">Color Preference</label>
+      <input type="text" id="color" name="color_preference" placeholder="Any color you'd like? (blue, red, green, etc.)">
+
+      <label for="notes">Anything else?</label>
+      <textarea id="notes" name="notes" placeholder="Special requests, questions, or just say hi!"></textarea>
+
+      <button type="submit" class="submit-btn">Send My Order Request!</button>
+    </form>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="about-section" id="about">
+  <div class="about-emoji" aria-hidden="true">&#x1F9D1;&#x200D;&#x1F4BB;</div>
+  <h2 class="section-title">About Me</h2>
+  <p>
+    Hi, I'm <strong>Wesley</strong> and I'm <strong>9 years old</strong>!
+    I love 3D printing cool stuff and sharing it with my friends.
+    Every item is printed by me on my own 3D printer.
+    I pick fun colors and make sure each print comes out awesome!
+  </p>
+  <div class="fun-fact">
+    <strong>Fun Fact:</strong> A 3D printer builds things layer by layer, kind of like stacking thousands of super thin pancakes! My printer can make all sorts of amazing toys and gadgets.
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-hearts" aria-hidden="true">&#10084;&#65039; &#x1F5A8;&#xFE0F; &#10084;&#65039;</div>
+  <p>Made with love and a 3D printer by Wesley</p>
+  <p style="margin-top:6px;font-size:0.8rem;opacity:0.7;">Wesley's 3D Prints &copy; 2026</p>
+</footer>
+
+<!-- THANK YOU MODAL -->
+<div class="modal-overlay" id="thankYouModal">
+  <div class="modal-box">
+    <div class="modal-emoji">&#x1F389;</div>
+    <h2>Order Sent!</h2>
+    <p>Thanks so much for your order! I'll check my email and talk to you soon about your awesome 3D printed item. See you at school!</p>
+    <button class="close-modal" onclick="closeModal()">Awesome!</button>
+  </div>
+</div>
+
+<script src="products.js"></script>
+<script>
+  // Load products from shared data (supports localStorage edits)
+  const products = getProducts();
+
+  // Format price for display
+  function fmtPrice(p) {
+    const s = '$' + p.price.toFixed(2);
+    return p.price < 5 ? s + ' ea' : s;
+  }
+
+  // Render product cards
+  const grid = document.getElementById('productsGrid');
+  const checkboxGrid = document.getElementById('checkboxGrid');
+
+  products.forEach((p, i) => {
+    const priceStr = fmtPrice(p);
+    // Card
+    const card = document.createElement('div');
+    card.className = 'product-card';
+    card.innerHTML = `
+      <div class="ribbon">${priceStr}</div>
+      <img class="card-image" src="${p.img}" alt="${p.name}" onerror="this.outerHTML='<div class=\\'card-image-placeholder\\'>${p.emoji}</div>'">
+      <div class="card-body">
+        <div class="card-name">${p.emoji} ${p.name}</div>
+        <div class="card-desc">${p.desc}</div>
+        <div class="card-price">${priceStr}</div>
+        ${p.minOrder ? `<div class="card-min-order">${p.minOrder}</div>` : ''}
+        <button class="order-btn" onclick="scrollToOrder('${p.name.replace(/'/g, "\\'")}')">Order This!</button>
+      </div>
+    `;
+    grid.appendChild(card);
+
+    // Checkbox
+    const label = document.createElement('label');
+    label.innerHTML = `<input type="checkbox" name="items" value="${p.name} (${priceStr})"> ${p.emoji} ${p.name} - ${priceStr}`;
+    checkboxGrid.appendChild(label);
+  });
+
+  // Scroll to order form and pre-check item
+  function scrollToOrder(itemName) {
+    document.getElementById('order').scrollIntoView({ behavior: 'smooth' });
+    const checkboxes = document.querySelectorAll('#checkboxGrid input[type="checkbox"]');
+    checkboxes.forEach(cb => {
+      if (cb.value.startsWith(itemName)) {
+        cb.checked = true;
+      }
+    });
+  }
+
+  // Form submission - intercept for thank-you modal
+  const form = document.getElementById('orderForm');
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    // Gather checked items
+    const checked = [...document.querySelectorAll('#checkboxGrid input:checked')].map(c => c.value);
+    if (checked.length === 0) {
+      alert('Please select at least one item!');
+      return;
+    }
+
+    // Submit via fetch to Formspree
+    const formData = new FormData(form);
+    // Combine checked items into one field
+    formData.set('items', checked.join(', '));
+
+    fetch(form.action, {
+      method: 'POST',
+      body: formData,
+      headers: { 'Accept': 'application/json' }
+    }).then(response => {
+      if (response.ok) {
+        document.getElementById('thankYouModal').classList.add('active');
+        form.reset();
+      } else {
+        alert('Oops! Something went wrong. Please try again.');
+      }
+    }).catch(() => {
+      // Show thank-you anyway for local testing
+      document.getElementById('thankYouModal').classList.add('active');
+      form.reset();
+    });
+  });
+
+  function closeModal() {
+    document.getElementById('thankYouModal').classList.remove('active');
+  }
+
+  // Close modal on overlay click
+  document.getElementById('thankYouModal').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Products - Wesley's 3D Prints Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: #1a1a2e;
+      color: #e0e0e0;
+      min-height: 100vh;
+    }
+
+    /* ===== TOP BAR ===== */
+    .topbar {
+      background: linear-gradient(135deg, #4a3f8a, #764ba2);
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+
+    .topbar h1 {
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.4rem;
+      color: #fff;
+    }
+
+    .topbar-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 10px;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+    .btn:active { transform: translateY(0); }
+
+    .btn-primary { background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; }
+    .btn-success { background: linear-gradient(135deg, #43e97b, #38f9d7); color: #1a1a2e; }
+    .btn-danger { background: linear-gradient(135deg, #f5576c, #ff6b6b); color: #fff; }
+    .btn-warning { background: linear-gradient(135deg, #f6d365, #fda085); color: #1a1a2e; }
+    .btn-ghost { background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.2); }
+    .btn-sm { padding: 6px 14px; font-size: 0.8rem; border-radius: 8px; }
+
+    /* ===== STATS BAR ===== */
+    .stats-bar {
+      background: rgba(255,255,255,0.05);
+      padding: 14px 24px;
+      display: flex;
+      gap: 30px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .stat { display: flex; flex-direction: column; }
+    .stat-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; color: #888; }
+    .stat-value { font-family: 'Fredoka One', cursive; font-size: 1.3rem; color: #43e97b; }
+
+    /* ===== PRODUCT LIST ===== */
+    .product-list {
+      max-width: 1100px;
+      margin: 24px auto;
+      padding: 0 20px;
+    }
+
+    .product-item {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      margin-bottom: 12px;
+      overflow: hidden;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .product-item:hover {
+      border-color: rgba(118, 75, 162, 0.5);
+      background: rgba(255,255,255,0.08);
+    }
+
+    .product-item.editing {
+      border-color: #667eea;
+      background: rgba(102,126,234,0.08);
+    }
+
+    .product-header {
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      cursor: pointer;
+    }
+
+    .product-drag {
+      color: #555;
+      font-size: 1.2rem;
+      cursor: grab;
+      user-select: none;
+      padding: 4px;
+    }
+
+    .product-thumb {
+      width: 56px;
+      height: 56px;
+      border-radius: 10px;
+      object-fit: cover;
+      background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+      flex-shrink: 0;
+    }
+
+    .product-thumb-placeholder {
+      width: 56px;
+      height: 56px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      flex-shrink: 0;
+    }
+
+    .product-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .product-info-name {
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.05rem;
+      color: #e0e0e0;
+    }
+
+    .product-info-meta {
+      font-size: 0.8rem;
+      color: #888;
+      margin-top: 2px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .product-price-badge {
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.1rem;
+      color: #f5576c;
+      white-space: nowrap;
+    }
+
+    .product-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    /* ===== EDIT FORM ===== */
+    .product-edit {
+      display: none;
+      padding: 0 20px 20px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .product-item.editing .product-edit { display: block; }
+
+    .edit-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    .edit-field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .edit-field.full-width { grid-column: 1 / -1; }
+
+    .edit-field label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #999;
+    }
+
+    .edit-field input,
+    .edit-field textarea,
+    .edit-field select {
+      padding: 10px 14px;
+      background: rgba(0,0,0,0.3);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 10px;
+      color: #e0e0e0;
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .edit-field input:focus,
+    .edit-field textarea:focus {
+      border-color: #667eea;
+    }
+
+    .edit-field textarea {
+      height: 60px;
+      resize: vertical;
+    }
+
+    .edit-field .field-hint {
+      font-size: 0.7rem;
+      color: #666;
+      margin-top: 2px;
+    }
+
+    .edit-actions {
+      margin-top: 16px;
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+    }
+
+    .printables-link {
+      color: #8ec5fc;
+      text-decoration: none;
+      font-size: 0.8rem;
+    }
+    .printables-link:hover { text-decoration: underline; }
+
+    /* ===== TOAST ===== */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #43e97b;
+      color: #1a1a2e;
+      padding: 14px 24px;
+      border-radius: 12px;
+      font-weight: 700;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+      transform: translateY(100px);
+      opacity: 0;
+      transition: transform 0.3s, opacity 0.3s;
+      z-index: 200;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    /* ===== CONFIRM MODAL ===== */
+    .confirm-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 300;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .confirm-overlay.active { display: flex; }
+
+    .confirm-box {
+      background: #2a2a3e;
+      border-radius: 20px;
+      padding: 30px;
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 15px 50px rgba(0,0,0,0.4);
+    }
+
+    .confirm-box h3 {
+      font-family: 'Fredoka One', cursive;
+      color: #f5576c;
+      margin-bottom: 10px;
+      font-size: 1.3rem;
+    }
+
+    .confirm-box p {
+      color: #aaa;
+      margin-bottom: 20px;
+      font-size: 0.95rem;
+    }
+
+    .confirm-actions { display: flex; gap: 10px; justify-content: center; }
+
+    /* ===== EMPTY STATE ===== */
+    .empty-state {
+      text-align: center;
+      padding: 80px 20px;
+      color: #666;
+    }
+
+    .empty-state .empty-emoji { font-size: 4rem; margin-bottom: 16px; }
+    .empty-state h3 { font-family: 'Fredoka One', cursive; color: #888; margin-bottom: 8px; }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 700px) {
+      .edit-grid { grid-template-columns: 1fr; }
+      .product-header { flex-wrap: wrap; }
+      .topbar { padding: 12px 16px; }
+      .topbar h1 { font-size: 1.1rem; }
+      .stats-bar { padding: 10px 16px; gap: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="topbar">
+  <h1>&#9881;&#65039; Wesley's 3D Prints - Product Editor</h1>
+  <div class="topbar-actions">
+    <a href="index.html" class="btn btn-ghost">&#x1F310; View Website</a>
+    <button class="btn btn-success" onclick="addProduct()">&#x2795; Add Product</button>
+    <button class="btn btn-warning" onclick="exportData()">&#x1F4E5; Export JSON</button>
+    <button class="btn btn-danger btn-sm" onclick="confirmReset()">&#x1F504; Reset to Defaults</button>
+  </div>
+</div>
+
+<div class="stats-bar" id="statsBar">
+  <!-- filled by JS -->
+</div>
+
+<div class="product-list" id="productList">
+  <!-- filled by JS -->
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div class="confirm-overlay" id="confirmModal">
+  <div class="confirm-box">
+    <h3 id="confirmTitle">Are you sure?</h3>
+    <p id="confirmMsg">This action cannot be undone.</p>
+    <div class="confirm-actions">
+      <button class="btn btn-ghost" onclick="closeConfirm()">Cancel</button>
+      <button class="btn btn-danger" id="confirmBtn" onclick="closeConfirm()">Delete</button>
+    </div>
+  </div>
+</div>
+
+<script src="products.js"></script>
+<script>
+  let products = getProducts();
+  let editingId = null;
+  let nextId = products.length ? Math.max(...products.map(p => p.id)) + 1 : 1;
+
+  function render() {
+    renderStats();
+    renderList();
+  }
+
+  function renderStats() {
+    const totalProducts = products.length;
+    const avgPrice = products.length ? (products.reduce((s, p) => s + p.price, 0) / products.length).toFixed(2) : '0.00';
+    const totalFilament = products.reduce((s, p) => s + (p.filamentG || 0), 0);
+    const filamentCost = (totalFilament * 0.02).toFixed(2);
+
+    document.getElementById('statsBar').innerHTML = `
+      <div class="stat"><span class="stat-label">Products</span><span class="stat-value">${totalProducts}</span></div>
+      <div class="stat"><span class="stat-label">Avg Price</span><span class="stat-value">$${avgPrice}</span></div>
+      <div class="stat"><span class="stat-label">Total Filament</span><span class="stat-value">${totalFilament}g</span></div>
+      <div class="stat"><span class="stat-label">Material Cost</span><span class="stat-value">$${filamentCost}</span></div>
+    `;
+  }
+
+  function renderList() {
+    const list = document.getElementById('productList');
+
+    if (products.length === 0) {
+      list.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-emoji">&#x1F4E6;</div>
+          <h3>No products yet!</h3>
+          <p>Click "Add Product" to get started.</p>
+        </div>
+      `;
+      return;
+    }
+
+    list.innerHTML = products.map((p, idx) => `
+      <div class="product-item ${editingId === p.id ? 'editing' : ''}" data-id="${p.id}">
+        <div class="product-header" onclick="toggleEdit(${p.id})">
+          <span class="product-drag" title="Drag to reorder">&#x2630;</span>
+          <img class="product-thumb" src="${p.img}" alt="${p.name}"
+               onerror="this.outerHTML='<div class=\\'product-thumb-placeholder\\'>${p.emoji}</div>'">
+          <div class="product-info">
+            <div class="product-info-name">${p.emoji} ${p.name}</div>
+            <div class="product-info-meta">
+              <span>&#x1F4A1; ${p.filamentG || '?'}g filament</span>
+              <span>&#x1F3F7; ${p.minOrder || 'No minimum'}</span>
+              ${p.printablesId ? `<a class="printables-link" href="https://www.printables.com/model/${p.printablesId}" target="_blank" onclick="event.stopPropagation()">Printables #${p.printablesId}</a>` : ''}
+            </div>
+          </div>
+          <div class="product-price-badge">$${p.price.toFixed(2)}</div>
+          <div class="product-actions">
+            <button class="btn btn-sm btn-primary" onclick="event.stopPropagation(); toggleEdit(${p.id})" title="Edit">&#x270F;&#xFE0F;</button>
+            <button class="btn btn-sm btn-ghost" onclick="event.stopPropagation(); moveProduct(${idx}, -1)" title="Move Up" ${idx === 0 ? 'disabled' : ''}>&#x2B06;</button>
+            <button class="btn btn-sm btn-ghost" onclick="event.stopPropagation(); moveProduct(${idx}, 1)" title="Move Down" ${idx === products.length - 1 ? 'disabled' : ''}>&#x2B07;</button>
+            <button class="btn btn-sm btn-danger" onclick="event.stopPropagation(); confirmDelete(${p.id}, '${p.name.replace(/'/g, "\\'")}')" title="Delete">&#x1F5D1;</button>
+          </div>
+        </div>
+        <div class="product-edit">
+          <div class="edit-grid">
+            <div class="edit-field">
+              <label>Product Name</label>
+              <input type="text" value="${escAttr(p.name)}" data-field="name" onchange="updateField(${p.id}, 'name', this.value)">
+            </div>
+            <div class="edit-field">
+              <label>Emoji</label>
+              <input type="text" value="${p.emoji}" data-field="emoji" onchange="updateField(${p.id}, 'emoji', this.value)">
+              <span class="field-hint">Single emoji for the product card</span>
+            </div>
+            <div class="edit-field">
+              <label>Price ($)</label>
+              <input type="number" step="0.50" min="0" value="${p.price}" data-field="price" onchange="updateField(${p.id}, 'price', parseFloat(this.value))">
+            </div>
+            <div class="edit-field">
+              <label>Min Order Note</label>
+              <input type="text" value="${escAttr(p.minOrder)}" data-field="minOrder" onchange="updateField(${p.id}, 'minOrder', this.value)" placeholder="e.g. Min 2 ($5.00)">
+            </div>
+            <div class="edit-field">
+              <label>Image Path</label>
+              <input type="text" value="${escAttr(p.img)}" data-field="img" onchange="updateField(${p.id}, 'img', this.value)" placeholder="images/my-item.jpg">
+            </div>
+            <div class="edit-field">
+              <label>Filament (grams)</label>
+              <input type="number" min="0" value="${p.filamentG || 0}" data-field="filamentG" onchange="updateField(${p.id}, 'filamentG', parseInt(this.value))">
+              <span class="field-hint">Est. cost: $${((p.filamentG || 0) * 0.02).toFixed(2)} | Markup: ${p.filamentG > 0 ? (p.price / (p.filamentG * 0.02)).toFixed(1) + 'x' : 'N/A'}</span>
+            </div>
+            <div class="edit-field full-width">
+              <label>Description</label>
+              <textarea data-field="desc" onchange="updateField(${p.id}, 'desc', this.value)">${escAttr(p.desc)}</textarea>
+            </div>
+            <div class="edit-field">
+              <label>Printables Model ID</label>
+              <input type="number" min="0" value="${p.printablesId || ''}" data-field="printablesId" onchange="updateField(${p.id}, 'printablesId', parseInt(this.value) || 0)" placeholder="e.g. 157347">
+              ${p.printablesId ? `<a class="printables-link" href="https://www.printables.com/model/${p.printablesId}/files" target="_blank">&#x1F517; Download STL files</a>` : ''}
+            </div>
+          </div>
+          <div class="edit-actions">
+            <button class="btn btn-sm btn-ghost" onclick="toggleEdit(${p.id})">Close</button>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function escAttr(s) {
+    return (s || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  function toggleEdit(id) {
+    editingId = editingId === id ? null : id;
+    renderList();
+  }
+
+  function updateField(id, field, value) {
+    const p = products.find(x => x.id === id);
+    if (p) {
+      p[field] = value;
+      save();
+      // Re-render stats but don't re-render the list (would lose focus)
+      renderStats();
+    }
+  }
+
+  function addProduct() {
+    const newP = {
+      id: nextId++,
+      name: "New Product",
+      img: "",
+      emoji: "\u{2B50}",
+      price: 5.00,
+      minOrder: "",
+      desc: "Describe this awesome 3D printed item!",
+      filamentG: 20,
+      printablesId: 0
+    };
+    products.unshift(newP);
+    editingId = newP.id;
+    save();
+    render();
+    // Scroll to top
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    toast('New product added! Edit it above.');
+  }
+
+  function moveProduct(idx, direction) {
+    const newIdx = idx + direction;
+    if (newIdx < 0 || newIdx >= products.length) return;
+    [products[idx], products[newIdx]] = [products[newIdx], products[idx]];
+    save();
+    render();
+  }
+
+  let pendingDeleteId = null;
+
+  function confirmDelete(id, name) {
+    pendingDeleteId = id;
+    document.getElementById('confirmTitle').textContent = 'Delete ' + name + '?';
+    document.getElementById('confirmMsg').textContent = 'This will remove the product from your website. You can always add it back later.';
+    document.getElementById('confirmBtn').onclick = () => {
+      doDelete(pendingDeleteId);
+      closeConfirm();
+    };
+    document.getElementById('confirmModal').classList.add('active');
+  }
+
+  function doDelete(id) {
+    products = products.filter(p => p.id !== id);
+    if (editingId === id) editingId = null;
+    save();
+    render();
+    toast('Product deleted!');
+  }
+
+  function closeConfirm() {
+    document.getElementById('confirmModal').classList.remove('active');
+    pendingDeleteId = null;
+  }
+
+  function confirmReset() {
+    document.getElementById('confirmTitle').textContent = 'Reset All Products?';
+    document.getElementById('confirmMsg').textContent = 'This will restore all products to the original 20 defaults. Any changes you made will be lost.';
+    document.getElementById('confirmBtn').onclick = () => {
+      resetProducts();
+      products = getProducts();
+      nextId = Math.max(...products.map(p => p.id)) + 1;
+      editingId = null;
+      render();
+      closeConfirm();
+      toast('Products reset to defaults!');
+    };
+    document.getElementById('confirmModal').classList.add('active');
+  }
+
+  function save() {
+    saveProducts(products);
+  }
+
+  function exportData() {
+    const json = JSON.stringify(products, null, 2);
+    const blob = new Blob([json], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'wesleys-3d-prints-products.json';
+    a.click();
+    URL.revokeObjectURL(url);
+    toast('Product data exported!');
+  }
+
+  function toast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+
+  // Initial render
+  render();
+</script>
+
+</body>
+</html>
